@@ -1,53 +1,56 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <signal.h>
 
-int main(int argc, char *argv[]) {
-    if (argc < 3) {
-        fprintf(stderr, "Usage: %s snds cmd [cmd-args]\n", argv[0]);
-        exit(1);
+int main(int argc, char *argv[])
+{
+    if (argc < 3)
+    {
+        printf("Usage: %s snds cmd [cmd-args]\n", argv[0]);
+        return 1;
     }
 
-    int snds = atoi(argv[1]);
-    char *cmd = argv[2];
-
+    int timeout = atoi(argv[1]);
     pid_t pid = fork();
-    if (pid == -1) {
-        perror("fork");
-        exit(1);
-    } else if (pid == 0) {
+
+    if (pid < 0)
+    {
+        printf("Error: fork() failed.\n");
+        return 1;
+    }
+    else if (pid == 0)
+    {
         // Child process
-        execvp(cmd, &argv[2]);
-        perror("execvp");
+        execvp(argv[2], &argv[2]);
+        printf("Error: execvp() failed.\n");
         exit(1);
-    } else {
+    }
+    else
+    {
         // Parent process
-        signal(SIGALRM, SIG_IGN); // Ignore SIGALRM initially
-
-        alarm(snds); // Set an alarm to send a SIGALRM signal after snds seconds
-
         int status;
-        pid_t result = waitpid(pid, &status, 0); // Wait for the child process to finish
+        int ret = 0;
 
-        if (result == -1) {
-            perror("waitpid");
-            exit(1);
-        } else if (WIFEXITED(status)) {
-            // Child process exited normally before the alarm went off
-            alarm(0); // Cancel the alarm
-            exit(WEXITSTATUS(status));
-        } else if (WIFSIGNALED(status)) {
-            // Child process was terminated by a signal
-            if (WTERMSIG(status) == SIGALRM) {
-                // Alarm went off, send SIGTERM to child process
-                kill(pid, SIGTERM);
-            }
-            // Wait for child process to exit
-            waitpid(pid, &status, 0);
-            exit(1);
+        // Set up alarm signal for timeout
+        alarm(timeout);
+
+        // Wait for child process to finish or receive signal
+        if (waitpid(pid, &status, 0) < 0)
+        {
+            printf("Error: waitpid() failed.\n");
+            return 1;
         }
+
+        // Check if child process was terminated by signal
+        if (WIFSIGNALED(status))
+        {
+            printf("Process terminated by signal %d.\n", WTERMSIG(status));
+            ret = 1;
+        }
+
+        return ret;
     }
 }

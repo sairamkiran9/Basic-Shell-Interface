@@ -6,7 +6,8 @@
 
 #define MAX_PATH 100
 
-void get_mypwd(){
+void get_mypwd()
+{
   char *pwd = getenv("CWD");
   if (pwd == NULL)
   {

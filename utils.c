@@ -68,7 +68,8 @@ void print_tokens(tokenlist *tokens)
     }
 }
 
-void execute_binaries(tokenlist *args){
+void execute_binaries(tokenlist *args)
+{
     // print_tokens(args);
     int status = 0;
     char *path = (char *)malloc(strlen(binaries_path) + strlen(args->items[0]) + 1);
@@ -96,10 +97,10 @@ void execute_binaries(tokenlist *args){
         /* Wait for child process to terminate */
         waitpid(pid, &status, 0);
     }
-
 }
 
-void execute_builtins(tokenlist *args){
+void execute_builtins(tokenlist *args)
+{
     int status = 0;
     int pid = fork();
 
@@ -120,5 +121,4 @@ void execute_builtins(tokenlist *args){
         /* Wait for child process to terminate */
         waitpid(pid, &status, 0);
     }
-
 }
