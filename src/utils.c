@@ -75,7 +75,7 @@ void execute_binaries(tokenlist *args)
     char *path = (char *)malloc(strlen(binaries_path) + strlen(args->items[0]) + 1);
 
     strcpy(path, binaries_path);
-    strcat(path, "/");
+    strcat(path, "/bin/");
     strcat(path, args->items[0]);
 
     int pid = fork();
