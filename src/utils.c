@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <sys/wait.h>
-#include "utils.h"
+#include "../include/utils.h"
 
 tokenlist *new_tokenlist(void)
 {

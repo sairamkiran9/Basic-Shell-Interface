@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <time.h>
-#include "utils.h"
+#include "../include/utils.h"
 
 void execute_cmds(tokenlist *tokens)
 {

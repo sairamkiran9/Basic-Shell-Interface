@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <time.h>
-#include "utils.h"
+#include "../include/utils.h"
 
 void execute_single_pipe(tokenlist *cmd1, tokenlist *cmd2)
 {
