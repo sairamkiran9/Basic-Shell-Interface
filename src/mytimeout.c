@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
         int ret = 0;
 
         // Set up alarm signal for timeout
+        signal(SIGALRM, timeout);
         alarm(timeout);
 
         // Wait for child process to finish or receive signal

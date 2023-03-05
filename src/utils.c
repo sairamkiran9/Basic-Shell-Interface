@@ -6,6 +6,17 @@
 #include <sys/wait.h>
 #include "../include/utils.h"
 
+void init_path(){
+    char *binaries_path = getenv("PWD");
+    char *path = getenv("PATH");
+    char *new_path = (char *)malloc(strlen(path) + strlen(binaries_path) + 6);
+    strcpy(new_path, path);
+    strcat(new_path, ":");
+    strcat(new_path, binaries_path);
+    strcat(new_path, "/bin");
+    setenv("PATH",new_path, 1);
+}
+
 tokenlist *new_tokenlist(void)
 {
     tokenlist *tokens = (tokenlist *)malloc(sizeof(tokenlist));
@@ -68,39 +79,18 @@ void print_tokens(tokenlist *tokens)
     }
 }
 
-void execute_binaries(tokenlist *args)
+void execute_builtins(tokenlist *tokens, tokenlist *args, int index, int flag)
 {
-    // print_tokens(args);
-    int status = 0;
-    char *path = (char *)malloc(strlen(binaries_path) + strlen(args->items[0]) + 1);
-
-    strcpy(path, binaries_path);
-    strcat(path, "/bin/");
-    strcat(path, args->items[0]);
-
-    int pid = fork();
-
-    if (pid < 0)
+    // check_fileio(tokens, args, index, flag);
+    for (int k = index; k < tokens->size; k++)
     {
-        fprintf(stderr, "Failed to fork the process\n");
-        exit(1);
+        if ((strcmp(tokens->items[k], ">") == 0) || (strcmp(tokens->items[k], "<") == 0))
+        {
+            flag = 1;
+            fileIO(k, flag, tokens); /* Call IO redirection method */
+        }
+        flag = 0;
     }
-    else if (pid == 0)
-    {
-        /* Execute linux command */
-        execv(path, args->items);
-        fprintf(stderr, "%s command not found\n", args->items[0]);
-        exit(1);
-    }
-    else
-    {
-        /* Wait for child process to terminate */
-        waitpid(pid, &status, 0);
-    }
-}
-
-void execute_builtins(tokenlist *args)
-{
     int status = 0;
     int pid = fork();
 

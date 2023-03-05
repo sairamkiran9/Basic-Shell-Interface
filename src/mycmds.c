@@ -33,7 +33,10 @@ void execute_mycd(tokenlist *tokens)
     /*
      * If user enters only cd, than the directory will be changed to $HOME.
      */
-    chdir(getenv("HOME"));
+    if (chdir(getenv("HOME")) != 0)
+    {
+      perror("Error ");
+    }
   }
   else if (tokens->size >= 3)
   {
@@ -51,6 +54,17 @@ void execute_mycd(tokenlist *tokens)
        * This if conditions does this fucntionaly by fetching the LWD variable from environment.
        */
       if (chdir(getenv("LWD")) != 0)
+      {
+        perror("Error ");
+      }
+    }
+    else if ((strcmp("~", tokens->items[1]) == 0) || (strcmp("$HOME", tokens->items[1]) == 0))
+    {
+      /*
+       * If user enters "cd -" than shell should get back to the previous working directory.
+       * This if conditions does this fucntionaly by fetching the LWD variable from environment.
+       */
+      if (chdir(getenv("HOME")) != 0)
       {
         perror("Error ");
       }

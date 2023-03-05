@@ -11,7 +11,7 @@ int main()
 {
     int pipe_count = 0;
 
-    binaries_path = getenv("PWD");
+    init_path();
 
     if ((fd = fopen("/dev/tty", "r+")) == 0)
     {
@@ -35,7 +35,7 @@ int main()
             args_list[i] = get_tokens(tokens->items[i], " ");
         }
 
-        pipe_count = tokens->size-1;
+        pipe_count = tokens->size - 1;
         if (pipe_count == 0)
         {
             execute_cmds(args_list[0]);
