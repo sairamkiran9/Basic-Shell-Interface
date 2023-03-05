@@ -25,15 +25,18 @@ void execute_mycd(tokenlist *tokens)
    * LWD and CWD are set as environment variables,
    * so the prompt feature can fetch the current working directory with ease.
    */
+
   char prevPath[MAX_PATH];
   char currPath[MAX_PATH];
   getcwd(prevPath, MAX_PATH); // load the current path to prevPath
-  if (tokens->size == 1)
+
+char *path = getenv("HOME");
+  if ((tokens->size == 1) || ((tokens->size > 1) && (strcmp("$HOME", tokens->items[1]) == 0)))
   {
     /*
      * If user enters only cd, than the directory will be changed to $HOME.
      */
-    if (chdir(getenv("HOME")) != 0)
+    if (chdir(path) != 0)
     {
       perror("Error ");
     }
@@ -58,13 +61,16 @@ void execute_mycd(tokenlist *tokens)
         perror("Error ");
       }
     }
-    else if ((strcmp("~", tokens->items[1]) == 0) || (strcmp("$HOME", tokens->items[1]) == 0))
+    else if (strncmp("~", tokens->items[1], 1) == 0)
     {
       /*
        * If user enters "cd -" than shell should get back to the previous working directory.
        * This if conditions does this fucntionaly by fetching the LWD variable from environment.
        */
-      if (chdir(getenv("HOME")) != 0)
+      char *newpath = (char*)malloc(strlen(path)+strlen(tokens->items[1]));
+      strcpy(newpath, path);
+      strcat(newpath, &tokens->items[1][1]);
+      if (chdir(newpath) != 0)
       {
         perror("Error ");
       }
