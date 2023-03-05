@@ -63,10 +63,6 @@ char *path = getenv("HOME");
     }
     else if (strncmp("~", tokens->items[1], 1) == 0)
     {
-      /*
-       * If user enters "cd -" than shell should get back to the previous working directory.
-       * This if conditions does this fucntionaly by fetching the LWD variable from environment.
-       */
       char *newpath = (char*)malloc(strlen(path)+strlen(tokens->items[1]));
       strcpy(newpath, path);
       strcat(newpath, &tokens->items[1][1]);

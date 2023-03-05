@@ -8,7 +8,6 @@
 pid_t pid;
 
 void handle_timeout() {
-    /* Handle timeout */
     kill(pid, SIGTERM);
 }
 
