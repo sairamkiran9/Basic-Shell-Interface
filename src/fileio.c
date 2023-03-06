@@ -1,3 +1,7 @@
+/**
+ * @file fileio.c
+ * @brief this method is the logic to support IOredirection
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,10 +12,9 @@
 void outputIO(char *outFile)
 {
     /**
-     * @brief method is called when ">" character is present in the input arguments.
+     * method is called when ">" character is present in the input arguments.
      * It will redirect the STDOUT to the specified file.
      *
-     * @return nothing
      */
     int outFD = open(outFile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
     close(1);
@@ -22,7 +25,7 @@ void outputIO(char *outFile)
 void inputIO(char *inFile)
 {
     /**
-     * @brief method is called when "<" character is present in the input arguments.
+     * method is called when "<" character is present in the input arguments.
      * It will redirect the specified file content to STDIN.
      */
     if (access(inFile, F_OK))
@@ -44,6 +47,7 @@ void inputIO(char *inFile)
 
 void check_fileio(tokenlist *tokens, tokenlist *args, int index, int flag)
 {
+    /* check for '<' or '>' present or not */
     for (int k = index; k < tokens->size; k++)
     {
         if ((strcmp(tokens->items[k], ">") == 0) || (strcmp(tokens->items[k], "<") == 0))
@@ -62,30 +66,26 @@ void fileIO(int index, int flag, tokenlist *tokens)
      */
     if (index + 1 < tokens->size)
     {
-        // printf("in if loop\n");
         if ((strcmp(tokens->items[index], ">") == 0) &&
             (tokens->items[index + 1] != NULL))
         {
-            
+
             outputIO(tokens->items[index + 1]);
-            // printf("in after if out\n");
         }
         else if ((strcmp(tokens->items[index], "<") == 0) &&
                  (tokens->items[index + 1] != NULL))
         {
-            // printf("in if in\n");
             inputIO(tokens->items[index + 1]);
         }
         else
         {
-            printf("syntax error near unexpected token 'newline'\n");
+            fprintf(stderr, "syntax error near unexpected token 'newline'\n");
             exit(0);
         }
-        // printf(">> out\n");
     }
     else if (flag == 1)
     {
-        printf("syntax error near unexpected token 'newline'\n");
+        fprintf(stderr, "syntax error near unexpected token 'newline'\n");
         exit(0);
     }
 }

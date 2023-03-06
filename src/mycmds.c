@@ -1,3 +1,9 @@
+/**
+ * @file mycmds.c
+ * @brief This file contains menthods that executes mycd and mypwd.
+ * 
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -8,6 +14,7 @@
 
 void get_mypwd()
 {
+  /* print current path */
   char *pwd = getenv("CWD");
   if (pwd == NULL)
   {
@@ -24,6 +31,7 @@ void execute_mycd(tokenlist *tokens)
    * It contains the last and new directories while executing the chdir().
    * LWD and CWD are set as environment variables,
    * so the prompt feature can fetch the current working directory with ease.
+   * 
    */
 
   char prevPath[MAX_PATH];
@@ -63,6 +71,7 @@ char *path = getenv("HOME");
     }
     else if (strncmp("~", tokens->items[1], 1) == 0)
     {
+      /* If user provided input cantains ~ char, it will be updated with $HOME */
       char *newpath = (char*)malloc(strlen(path)+strlen(tokens->items[1]));
       strcpy(newpath, path);
       strcat(newpath, &tokens->items[1][1]);
@@ -70,6 +79,7 @@ char *path = getenv("HOME");
       {
         perror("Error ");
       }
+      free(newpath);
     }
     else if (chdir(tokens->items[1]) != 0)
     {

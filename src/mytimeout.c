@@ -1,3 +1,8 @@
+/**
+ *@file mytimeout.c
+ *@brief Kill the process if the specified time is completed
+ *
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -7,7 +12,11 @@
 
 pid_t pid;
 
-void handle_timeout() {
+void handle_timeout()
+{
+    /**
+     * method that kills the process when it's timeout
+     */
     kill(pid, SIGTERM);
 }
 
@@ -15,7 +24,7 @@ int main(int argc, char *argv[])
 {
     if (argc < 3)
     {
-        printf("Usage: %s snds cmd [cmd-args]\n", argv[0]);
+        fprintf(stderr, "Usage: %s snds cmd [cmd-args]\n", argv[0]);
         return 1;
     }
 
@@ -24,13 +33,16 @@ int main(int argc, char *argv[])
 
     if (pid < 0)
     {
-        printf("Error: fork() failed.\n");
+        fprintf(stderr, "Error: fork() failed.\n");
         return 1;
     }
     else if (pid == 0)
     {
+        /**
+         * call the binaries
+         */
         execvp(argv[2], &argv[2]);
-        printf("Error: execvp() failed.\n");
+        fprintf(stderr, "Error: execvp() failed.\n");
         exit(1);
     }
     else
@@ -38,10 +50,12 @@ int main(int argc, char *argv[])
         int status;
         signal(SIGALRM, handle_timeout);
         alarm(timeout);
-
+        /**
+         * Wait for child process to terminate
+         */
         if (waitpid(pid, &status, 0) < 0)
         {
-            printf("Error: waitpid() failed.\n");
+            fprintf(stderr, "Error: waitpid() failed.\n");
             return 1;
         }
     }

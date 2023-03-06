@@ -6,7 +6,9 @@
 #include <sys/wait.h>
 #include "../include/utils.h"
 
-void init_path(){
+void init_path()
+{
+    /* adding current working dir to $PATH */
     char *binaries_path = getenv("PWD");
     char *path = getenv("PATH");
     char *new_path = (char *)malloc(strlen(path) + strlen(binaries_path) + 6);
@@ -14,11 +16,13 @@ void init_path(){
     strcat(new_path, ":");
     strcat(new_path, binaries_path);
     strcat(new_path, "/bin");
-    setenv("PATH",new_path, 1);
+    setenv("PATH", new_path, 1);
+    free(new_path);
 }
 
 tokenlist *new_tokenlist(void)
 {
+    /* intialize tokenlist structure */
     tokenlist *tokens = (tokenlist *)malloc(sizeof(tokenlist));
     tokens->size = 0;
     tokens->items = (char **)malloc(sizeof(char *));
@@ -28,6 +32,7 @@ tokenlist *new_tokenlist(void)
 
 void add_token(tokenlist *tokens, char *item)
 {
+    /* add tokens to the list array */
     int i = tokens->size;
     char *eol = strchr(item, '\n');
     if (eol != NULL)
@@ -46,6 +51,7 @@ void add_token(tokenlist *tokens, char *item)
 
 tokenlist *get_tokens(char *input, char *delimiter)
 {
+    /* Input parser based on delimeter */
     char *buf = (char *)malloc(strlen(input) + 1);
     strcpy(buf, input);
 
@@ -63,6 +69,7 @@ tokenlist *get_tokens(char *input, char *delimiter)
 
 void free_tokens(tokenlist *tokens)
 {
+    /* free allocated memory */
     for (int i = 0; i < tokens->size; i++)
     {
         free(tokens->items[i]);
@@ -71,8 +78,18 @@ void free_tokens(tokenlist *tokens)
     free(tokens);
 }
 
+void clean_mem(tokenlist *tokens, tokenlist *args_list[])
+{
+  for (int i = 0; i < tokens->size; i++)
+  {
+    free_tokens(args_list[i]);
+  }
+  free_tokens(tokens);
+}
+
 void print_tokens(tokenlist *tokens)
 {
+    /* print parsed input arguments */
     for (int i = 0; i < tokens->size; i++)
     {
         printf("token %d: (%s) \n", i, tokens->items[i]);
@@ -81,22 +98,14 @@ void print_tokens(tokenlist *tokens)
 
 void execute_builtins(tokenlist *tokens, tokenlist *args, int index, int flag)
 {
-    // check_fileio(tokens, args, index, flag);
-    for (int k = index; k < tokens->size; k++)
-    {
-        if ((strcmp(tokens->items[k], ">") == 0) || (strcmp(tokens->items[k], "<") == 0))
-        {
-            flag = 1;
-            fileIO(k, flag, tokens); /* Call IO redirection method */
-        }
-        flag = 0;
-    }
+    /* check for IO redirection */
+    check_fileio(tokens, args, index, flag);
     int status = 0;
     int pid = fork();
 
     if (pid < 0)
     {
-        fprintf(stderr, "Failed to fork the process\n");
+        fprintf(stderr, "Error: fork() failed.\n");
         exit(1);
     }
     else if (pid == 0)
