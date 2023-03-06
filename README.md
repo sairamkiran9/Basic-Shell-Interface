@@ -1,5 +1,4 @@
-###
-Project 2: A Simple Unix Systems Toolkit
+### Project 2: A Simple Unix Systems Toolkit
 
 #### Project Statement: 
 Develop a simple Unix systems toolkit for process and filesystem management
@@ -7,7 +6,7 @@ Develop a simple Unix systems toolkit for process and filesystem management
 #### Project Objectives: 
 Practicing Unix system calls, understanding Unix process management, synchronization, and inter-process communication (IPC), and filesystem management.
 
-#### Project file structure
+#### Project folder structure
     .
     ├── Makefile
     ├── README.md
