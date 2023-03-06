@@ -1,4 +1,3 @@
-FILE *fd;
 char buf[82];
 
 typedef struct
@@ -23,6 +22,6 @@ void fileIO(int index, int flag, tokenlist *tokens);
 void check_fileio(tokenlist *tokens, tokenlist *args, int index, int flag);
 
 void init_path(void);
-void init_toolkit(FILE *fd);
+void init_toolkit();
 void get_mypwd(void);
 void execute_mycd(tokenlist *tokens);

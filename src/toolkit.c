@@ -13,14 +13,14 @@
 #include <time.h>
 #include "../include/utils.h"
 
-void init_toolkit(FILE *fd)
+void init_toolkit()
 {
     /* This method runs until the user interupts or exit. */
     int pipe_count = 0;
     while (1)
     {
         printf("$ ");
-        if (fgets(buf, 82, fd) == NULL)
+        if (fgets(buf, 82, stdin) == NULL)
         {
             exit(0);
         }

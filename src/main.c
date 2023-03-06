@@ -11,17 +11,9 @@
 
 int main()
 {
-    /**
-     * add current working directory to $PATH
-     */
+    /* add current working directory to $PATH */
     init_path();
-    if ((fd = fopen("/dev/tty", "r+")) == 0)
-    {
-        perror("Cannot open /dev/tty\n");
-        exit(0);
-    }
-    /**
-     * Intialize toolkit
-     */
-    init_toolkit(fd);
+
+    /* Intialize toolkit */
+    init_toolkit();
 }
