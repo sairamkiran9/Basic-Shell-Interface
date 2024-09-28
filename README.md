@@ -1,4 +1,4 @@
-### Project 2: A Simple Unix Systems Toolkit
+### A Unix Systems Toolkit
 
 #### Project Statement: 
 Develop a simple Unix systems toolkit for process and filesystem management
